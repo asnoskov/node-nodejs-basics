@@ -1,13 +1,16 @@
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
+import { checkFileOrFolderExists } from '../util/fsUtils.js';
 
 const copy = async () => {
     const sourceFolder = "./files";
     const destinationFolder = "./files_copy";
 
-    //todo: if dst folder does exists, error and exit 
+    if (await checkFileOrFolderExists(destinationFolder)) {
+        throw new Error("FS operation failed");
+    }
 
-    // I assume that we also copy contents of nested folders? Implemented this way.
+    // I assume that we also copy contents of nested folders (if any exist)? Implemented this way.
     const copyFolderWithContents = async (sourceFolder, destinationFolder) => {
         await fs.mkdir(destinationFolder);
         const filesAndFolders = await fs.readdir(sourceFolder);
